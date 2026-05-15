@@ -11,13 +11,14 @@ function Home() {
     const [likedPosts, setLikedPosts] = useState([]);
     const { authState } = useContext(AuthContext);
     let navigate = useNavigate();
+    const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3001";
 
     useEffect(() => {
         // if (!localStorage.getItem("accessToken")) {
         //     navigate("/login");
         // } else {
             axios
-                .get("http://localhost:3001/posts", {
+                .get(`${apiUrl}/posts`, {
                     headers: {accessToken: localStorage.getItem("accessToken")},
                 })
                 .then((response) => {
@@ -37,7 +38,7 @@ function Home() {
     const likeAPost = (postId) => {
         axios
             .post(
-                "http://localhost:3001/likes",
+                `${apiUrl}/likes`,
                 { PostId: postId },
                 { headers: { accessToken: localStorage.getItem("accessToken") } }
             )
@@ -85,7 +86,7 @@ function Home() {
                         {/*    onClick={() => {*/}
                         {/*        navigate(`/post/${value.id}`);*/}
                         {/*    }}*/}
-                        {/*    style={{width: '100%', height: '200px'}} src={`http://localhost:3001/${value.image}`} alt='no image'/>*/}
+                        {/*    style={{width: '100%', height: '200px'}} src={`${apiUrl}/${value.image}`} alt='no image'/>*/}
                         <div
                             className="body"
                              onClick={() => {
@@ -93,7 +94,7 @@ function Home() {
                                 }}
                         >
                             <img
-                                style={{width: '100%', height: '200px'}} src={`http://localhost:3001/${value.image}`} alt='no image'/>
+                                style={{width: '100%', height: '200px'}} src={`${apiUrl}/${value.image}`} alt='no image'/>
                             {/*{value.postText}*/}
                         </div>
                         <div className="footer">

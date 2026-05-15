@@ -10,11 +10,12 @@ function Profile() {
     const [postImage, setPostImage] = useState('')
 
     useEffect(() => {
-        axios.get(`http://localhost:3001/auth/basicinfo/${id}`).then((response) => {
+        const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3001";
+        axios.get(`${apiUrl}/auth/basicinfo/${id}`).then((response) => {
             setUsername(response.data.username);
         });
 
-        axios.get(`http://localhost:3001/posts/byuserId/${id}`).then((response) => {
+        axios.get(`${apiUrl}/posts/byuserId/${id}`).then((response) => {
             setListOfPosts(response.data);
             setPostImage(response.data.image)
         });
@@ -37,7 +38,7 @@ function Profile() {
                                     navigate(`/post/${value.id}`);
                                 }}
                             >
-                                <img style={{width: '100%', height: '200px'}} src={`http://localhost:3001/${value.image}`} alt='no image'/>
+                                <img style={{width: '100%', height: '200px'}} src={`${process.env.REACT_APP_API_URL || "http://localhost:3001"}/${value.image}`} alt='no image'/>
                                 {/*{value.postText}*/}
                             </div>
                             <div className="footer">

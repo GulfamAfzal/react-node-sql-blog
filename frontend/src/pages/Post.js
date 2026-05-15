@@ -12,14 +12,15 @@ function Post() {
     const { authState } = useContext(AuthContext);
 
     let navigate = useNavigate()
+    const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3001";
 
     useEffect(() => {
-        axios.get(`http://localhost:3001/posts/byId/${id}`).then((response) => {
+        axios.get(`${apiUrl}/posts/byId/${id}`).then((response) => {
             setPostObject(response.data);
             // console.log(response.data)
         });
 
-        axios.get(`http://localhost:3001/comments/${id}`).then((response) => {
+        axios.get(`${apiUrl}/comments/${id}`).then((response) => {
             setComments(response.data);
         });
     }, []);
@@ -27,7 +28,7 @@ function Post() {
     const addComment = () => {
         axios
             .post(
-                "http://localhost:3001/comments",
+                `${apiUrl}/comments`,
                 {
                     commentBody: newComment,
                     PostId: id,
@@ -54,7 +55,7 @@ function Post() {
 
     const deleteComment = (id) => {
         axios
-            .delete(`http://localhost:3001/comments/${id}`, {
+            .delete(`${apiUrl}/comments/${id}`, {
                 headers: { accessToken: localStorage.getItem("accessToken") },
             })
             .then(() => {
@@ -68,7 +69,7 @@ function Post() {
 
     const deletePost = (id) => {
         axios
-            .delete(`http://localhost:3001/posts/${id}`, {
+            .delete(`${apiUrl}/posts/${id}`, {
                 headers: { accessToken: localStorage.getItem("accessToken") },
             })
             .then(() => {
@@ -82,7 +83,7 @@ function Post() {
                 <div className="post" id="individual">
                     <div className="title"> {postObject.title} </div>
                     {/*<div className="body">{postObject.postText}</div>*/}
-                    <img style={{width: '100%', height: '300px'}} src={`http://localhost:3001/${postObject.image}`} alt='no image'/>
+                    <img style={{width: '100%', height: '300px'}} src={`${apiUrl}/${postObject.image}`} alt='no image'/>
                     <div className="footer">
                         <div className="username">
                             <Link to={`/profile/${postObject.UserId}`}> {postObject.username} </Link>

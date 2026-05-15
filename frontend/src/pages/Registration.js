@@ -18,7 +18,8 @@ function Registration() {
     });
 
     const onSubmit = (data) => {
-        axios.post("http://localhost:3001/auth", data).then(() => {
+        const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3001";
+        axios.post(`${apiUrl}/auth`, data).then(() => {
             console.log(data);
             navigate("/login");
         });

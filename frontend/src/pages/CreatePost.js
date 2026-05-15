@@ -29,7 +29,7 @@ function CreatePost() {
 
 
     const onSubmit = (data) => {
-
+        const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3001";
         const formData = new FormData()
         formData.append('image', image)
         formData.append('title', title)
@@ -37,7 +37,7 @@ function CreatePost() {
 
 
         axios
-            .post("http://localhost:3001/posts", formData, {
+            .post(`${apiUrl}/posts`, formData, {
                 headers: { accessToken: localStorage.getItem("accessToken") },
             }).then((response) => {
             navigate(`/`);

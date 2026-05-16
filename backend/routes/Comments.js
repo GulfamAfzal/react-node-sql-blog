@@ -1,82 +1,32 @@
 const express = require("express");
 const router = express.Router();
-const { Comments } = require("../models");
-const { validateToken } = require("../middlewares/AuthMiddleware");
+const sql = require("mssql");
 
+// GET comments for a specific post
 router.get("/:postId", async (req, res) => {
     const postId = req.params.postId;
-    const comments = await Comments.findAll({ where: { PostId: postId } });
-    res.json(comments);
+    try {
+        const result = await sql.query`SELECT id, commentBody, PostId, username, createdAt FROM Comments WHERE PostId = ${postId}`;
+        res.json(result.recordset);
+    } catch (err) {
+        console.error("MSSQL Comments Fetch Exception:", err.message);
+        res.status(500).json({ error: "Failed to fetch comments.", details: err.message });
+    }
 });
 
-router.post("/", validateToken, async (req, res) => {
-    const comment = req.body;
-    const username = req.user.username;
-    const userId = req.user.id
-    // const userImage = req.user.image
-    comment.username = username;
-    comment.userId = userId
-    // comment.userImage = userImage
-    await Comments.create(comment);
-    res.json(comment);
-});
-
-router.delete("/:commentId", validateToken, async (req, res) => {
-    const commentId = req.params.commentId;
-
-    await Comments.destroy({
-        where: {
-            id: commentId,
-        },
-    });
-
-    res.json("DELETED SUCCESSFULLY");
+// POST a comment
+router.post("/", async (req, res) => {
+    const { commentBody, PostId, username } = req.body;
+    try {
+        await sql.query`
+            INSERT INTO Comments (commentBody, PostId, username, createdAt) 
+            VALUES (${commentBody}, ${PostId}, ${username}, GETDATE())
+        `;
+        res.json({ success: "Comment added successfully!" });
+    } catch (err) {
+        console.error("MSSQL Comment Insertion Exception:", err.message);
+        res.status(500).json({ error: err.message });
+    }
 });
 
 module.exports = router;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-// const express = require("express");
-// const router = express.Router();
-//
-// // User Controller
-// const commentController = require('../controllers/commentController')
-//
-// // User Validation Middleware
-// const { validateToken } = require("../middlewares/AuthMiddleware");
-//
-//
-// // Get Post Comments
-// router.get('/:postId', commentController.getPostComments)
-//
-//
-// // Add Comment
-// router.post('/', validateToken, commentController.addComment)
-// // Delete Comment
-// router.post('/:commentId', commentController.deleteComment)
-//
-//
-//
-// module.exports = router;

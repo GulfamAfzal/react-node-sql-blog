@@ -33,10 +33,10 @@
     <img src="images/logo4.png" alt="Logo" width="200" >
   </a>
 
-<h3 align="center">Storytelling Blog - React Express MySQL Application</h3>
+<h3 align="center">Storytelling Blog - React Express MSSQL Application</h3>
 
   <p align="center">
-    Storytelling is a Full Stack Blog. This stack includes - React, Node, Bootstrap, MySQL Server, Netlify, Heroku and ClearDB.
+    Storytelling is a Full Stack Blog. This stack includes - React, Node, Bootstrap, Azure SQL Server (MSSQL), Netlify, and Azure App Service.
     <br />
     <a href="https://github.com/dontrellthedeveloper/react-node-sql-blog"><strong>Explore the docs »</strong></a>
     <br />
@@ -109,7 +109,7 @@
 * [![React][React.js]][React-url]
 * [![Bootstrap][Bootstrap.com]][Bootstrap-url]
 * [![Node][Node.js]][Node-url]
-* [![MySQL][MySQL]][MySQL-url]
+* [![MSSQL][MSSQL]][MSSQL-url]
 * [![Netlify][Netlify]][Netlify-url]
 * [![Heroku][Heroku]][Heroku-url]
 
@@ -179,7 +179,7 @@ This is an example of how to list things you need to use the software and how to
 
 ### Installation
 
-1. Create a SQL server database. Try using MySQL Workbench.
+1. Create a SQL server database. Try using Azure Data Studio or SQL Server Management Studio (SSMS).
 5. Clone the repo
    ```sh
    git clone https://github.com/dontrellthedeveloper/react-node-sql-blog.git
@@ -338,8 +338,8 @@ Project Link: [https://github.com/dontrellthedeveloper/react-node-sql-blog](http
 [GoogleLogin-url]: https://console.cloud.google.com
 
 
-[MySQL]: https://img.shields.io/badge/mySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white
-[MySQL-url]: https://redux.js.org/
+[MSSQL]: https://img.shields.io/badge/Microsoft%20SQL%20Server-CC292B?style=for-the-badge&logo=microsoft%20sql%20server&logoColor=white
+[MSSQL-url]: https://www.microsoft.com/en-us/sql-server/
 
 [Heroku]: https://img.shields.io/badge/heroku-430098?style=for-the-badge&logo=heroku&logoColor=FFCA28
 [Heroku-url]: https://firebase.google.com/

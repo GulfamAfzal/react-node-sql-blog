@@ -1,23 +1,14 @@
 {
   "development": {
-    "username": "root",
-    "password": "KNight1990$",
-    "database": "FullStackBlog",
-    "host": "localhost",
-    "dialect": "mysql"
+    "use_env_variable": "DB_CONNECTION_STRING",
+    "dialect": "mssql"
   },
   "test": {
-    "username": "root",
-    "password": "KNight1990$",
-    "database": "database_test",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "use_env_variable": "DB_CONNECTION_STRING",
+    "dialect": "mssql"
   },
   "production": {
-    "username": "b4ce6239d76248",
-    "password": "e0aab952",
-    "database": "heroku_f19f4b01fcda7ac",
-    "host": "us-cdbr-east-06.cleardb.net",
-    "dialect": "mysql"
+    "use_env_variable": "DB_CONNECTION_STRING",
+    "dialect": "mssql"
   }
 }

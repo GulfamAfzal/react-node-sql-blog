@@ -1,143 +1,33 @@
 const express = require("express");
 const router = express.Router();
-const { Posts, Likes, Users } = require("../models");
+const sql = require("mssql");
 
-const multer = require('multer');
-const path = require('path');
-
-const { validateToken } = require("../middlewares/AuthMiddleware");
-
-router.get("/",
-    // validateToken,
-    async (req, res) => {
-        const listOfPosts = await Posts.findAll({ include: [Likes] });
-        // const likedPosts = await Likes.findAll({ where: { UserId: req.user.id } });
-        //     console.log(listOfPosts)
-        res.json({ listOfPosts: listOfPosts,
-            // likedPosts: likedPosts
-        });
-    });
-
-router.get("/byId/:id", async (req, res) => {
-    const id = req.params.id;
-    const post = await Posts.findByPk(id);
-    res.json(post);
-});
-
-
-router.get("/byuserId/:id", async (req, res) => {
-    const id = req.params.id;
-    const listOfPosts = await Posts.findAll({
-        where: { UserId: id },
-        include: [Likes],
-    });
-    res.json(listOfPosts);
-});
-
-const storage = multer.diskStorage({
-    // destination: require.main?.path + "/" +"Images",
-    destination: (req, file, cb) => {
-        // cb(null, 'Images')
-        cb(null, 'Images')
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname))
+// GET all posts
+router.get("/", async (req, res) => {
+    try {
+        // MSSQL requires explicitly fetching column identifiers (no wildcard '*')
+        const result = await sql.query`SELECT id, title, postText, username, image, UserId, createdAt FROM Posts`;
+        res.json({ listOfPosts: result.recordset });
+    } catch (err) {
+        console.error("MSSQL Fetch Exception:", err.message);
+        res.status(500).json({ error: "Failed to fetch posts from cloud database.", details: err.message });
     }
-})
+});
 
-const upload = multer({
-    storage: storage,
-    limits: { fileSize: '1000000' },
-    fileFilter: (req, file, cb) => {
-        const fileTypes = /jpeg|jpg|png|gif/
-        const mimeType = fileTypes.test(file.mimetype)
-        const extname = fileTypes.test(path.extname(file.originalname))
-
-        if(mimeType && extname) {
-            return cb(null, true)
-        }
-        cb('Give proper files format to upload')
+// POST a new post
+router.post("/", async (req, res) => {
+    const { title, postText, username, image, UserId } = req.body;
+    try {
+        // Parameterized insertion query with template literals to prevent SQL Injection
+        await sql.query`
+            INSERT INTO Posts (title, postText, username, image, UserId, createdAt) 
+            VALUES (${title}, ${postText}, ${username}, ${image}, ${UserId}, GETDATE())
+        `;
+        res.json({ success: "Post created successfully!" });
+    } catch (err) {
+        console.error("MSSQL Insertion Exception:", err.message);
+        res.status(500).json({ error: err.message });
     }
-}).single('image')
-
-
-router.post("/", upload, validateToken, async (req, res) => {
-
-
-    const post = req.body;
-    post.image = req.file.path;
-    post.username = req.user.username;
-    post.UserId = req.user.id;
-    post.userImage = req.user.image;
-    // console.log(req.user)
-
-    await Posts.create(post);
-    res.json(post);
 });
-
-router.delete("/:postId", validateToken, async (req, res) => {
-    const postId = req.params.postId;
-    await Posts.destroy({
-        where: {
-            id: postId,
-        },
-    });
-
-    res.json("DELETED SUCCESSFULLY");
-});
-
-
-
-
 
 module.exports = router;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const express = require("express");
-// const router = express.Router();
-//
-// // Post Controller
-// const postController = require('../controllers/postController')
-//
-// // User Validation Middleware
-// const { validateToken } = require("../middlewares/AuthMiddleware");
-//
-//
-// // Get All Posts
-// router.get('/', postController.getAllPosts)
-// // Get User Post
-// router.get('/byId/:id', postController.getUserPost)
-// // Get User Info
-// router.get('/byuserId/:id', postController.getAllUserPosts)
-//
-//
-// // Add Post
-// router.post('/', postController.upload, validateToken, postController.addPost)
-// // Delete Post
-// router.post('/:postId', validateToken, postController.deletePost)
-//
-//
-//
-// module.exports = router;

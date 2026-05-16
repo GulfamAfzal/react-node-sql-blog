@@ -3,8 +3,7 @@ CREATE TABLE Users (
     id INT IDENTITY(1,1) PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    createdAt DATETIME2 DEFAULT GETDATE(),
-    updatedAt DATETIME2 DEFAULT GETDATE()
+    createdAt DATETIME2 DEFAULT GETDATE()
 );
 
 -- 2. Create the Posts Table

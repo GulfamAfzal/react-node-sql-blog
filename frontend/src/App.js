@@ -1,45 +1,33 @@
 import "./App.css";
-
-
-import {BrowserRouter as Router, Routes, Route, Link} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Home from "./pages/Home";
 import CreatePost from "./pages/CreatePost";
 import Post from "./pages/Post";
 import Registration from "./pages/Registration";
 import Login from "./pages/Login";
-
-import {AuthContext} from "./helpers/AuthContext";
-import {useState, useEffect} from "react";
-import axios from 'axios'
+import { AuthContext } from "./helpers/AuthContext";
+import { useState, useEffect } from "react";
+import axios from 'axios';
 import PageNotFound from "./pages/PageNotFound";
 import Profile from "./pages/Profile";
 
+// MUI Components for a professional UI
+import { AppBar, Toolbar, Typography, Button, Container, Box, Paper } from "@material-ui/core";
+
 function App() {
-    const [authState, setAuthState] = useState({
-        username: "",
-        id: 0,
-        status: false,
-    });
+    const [authState, setAuthState] = useState({ username: "", id: 0, status: false });
 
     useEffect(() => {
         const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:3001";
-        axios
-            .get(`${apiUrl}/auth/auth`, {
-                headers: {
-                    accessToken: localStorage.getItem("accessToken"),
-                },
-            })
-            .then((response) => {
-                if (response.data.error) {
-                    setAuthState({ ...authState, status: false });
-                } else {
-                    setAuthState({
-                        username: response.data.username,
-                        id: response.data.id,
-                        status: true,
-                    });
-                }
-            });
+        axios.get(`${apiUrl}/auth/auth`, {
+            headers: { accessToken: localStorage.getItem("accessToken") },
+        }).then((response) => {
+            if (response.data.error) {
+                setAuthState({ ...authState, status: false });
+            } else {
+                setAuthState({ username: response.data.username, id: response.data.id, status: true });
+            }
+        });
     }, []);
 
     const logout = () => {
@@ -47,44 +35,47 @@ function App() {
         setAuthState({ username: "", id: 0, status: false });
     };
 
-  return (
-      <div className="App">
-          <AuthContext.Provider value={{authState, setAuthState}}>
-              <Router>
-              <div className="navbar">
-                  <div className="links">
-                      <Link to="/"> Home Page</Link>
-                      {/*<Link to="/createpost"> Create A Post</Link>*/}
-                      {!authState.status ? (
-                          <>
-                              <Link to="/login"> Login</Link>
-                              <Link to="/registration"> Registration</Link>
-                          </>
-                      ) : (
-                          <>
-                              {/*<Link to="/"> Home Page</Link>*/}
-                              <Link to="/createpost"> Create A Post</Link>
-                          </>
-                      )}
-                  </div>
-                  <div className="loggedInContainer">
-                      <h1>{authState.username} </h1>
-                      {authState.status && <button onClick={logout}> Logout</button>}
-                  </div>
-              </div>
-            <Routes>
-              <Route path='/' element={<Home/>} exact />
-              <Route path='/createpost' element={<CreatePost/>} />
-              <Route path="/post/:id" exact element={<Post/>} />
-              <Route path="/registration" exact element={<Registration/>} />
-              <Route path="/login" exact element={<Login/>} />
-              <Route path="/profile/:id" exact element={<Profile/>} />
-              <Route path="*" exact element={<PageNotFound/>} />
-            </Routes>
-            </Router>
-        </AuthContext.Provider>
-      </div>
-  );
+    return (
+        <div className="App">
+            <AuthContext.Provider value={{ authState, setAuthState }}>
+                <Router>
+                    <AppBar position="sticky" elevation={4} style={{ background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)' }}>
+                        <Toolbar>
+                            <Typography variant="h5" style={{ flexGrow: 1, fontWeight: 'bold', letterSpacing: '1px' }}>
+                                DEVOPS BLOG
+                            </Typography>
+                            <Box className="links">
+                                <Button component={Link} to="/" color="inherit">Home</Button>
+                                {authState.status ? (
+                                    <>
+                                        <Button component={Link} to="/createpost" color="inherit">Create Post</Button>
+                                        <Button onClick={logout} variant="outlined" color="inherit" style={{ marginLeft: '10px' }}>Logout</Button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Button component={Link} to="/login" color="inherit">Login</Button>
+                                        <Button component={Link} to="/registration" variant="contained" color="secondary" style={{ marginLeft: '10px' }}>Register</Button>
+                                    </>
+                                )}
+                            </Box>
+                        </Toolbar>
+                    </AppBar>
+
+                    <Container maxWidth="lg" style={{ marginTop: '40px', paddingBottom: '40px' }}>
+                        <Routes>
+                            <Route path='/' element={<Home />} />
+                            <Route path='/createpost' element={<CreatePost />} />
+                            <Route path="/post/:id" element={<Post />} />
+                            <Route path="/registration" element={<Registration />} />
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/profile/:id" element={<Profile />} />
+                            <Route path="*" element={<PageNotFound />} />
+                        </Routes>
+                    </Container>
+                </Router>
+            </AuthContext.Provider>
+        </div>
+    );
 }
 
 export default App;

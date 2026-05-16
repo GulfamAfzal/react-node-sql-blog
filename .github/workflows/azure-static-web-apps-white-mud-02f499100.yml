@@ -38,12 +38,13 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_WHITE_MUD_02F499100 }}
           action: "upload"
-          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
-          # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
+          ###### Repository/Build Configurations ######
           app_location: "./client-styled" # App source code path
           api_location: "" # Api source code path - optional
           output_location: "build" # Built app content directory - optional
           github_id_token: ${{ steps.idtoken.outputs.result }}
+          # 👇 CRITICAL FIX: Overrides the default npm install to handle dependency conflicts cleanly
+          app_build_command: 'npm install --legacy-peer-deps && npm run build'
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
